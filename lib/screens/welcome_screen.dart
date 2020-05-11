@@ -75,7 +75,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
               height: 48.0,
             ),
             RoundedButton(
-              title: 'Register',
+              title: 'Login',
               colour: Colors.lightBlueAccent,
               onPressed: () {
                 //Go to login screen.
