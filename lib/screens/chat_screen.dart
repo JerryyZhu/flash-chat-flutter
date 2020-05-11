@@ -37,18 +37,6 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
-//  void getMessages() async {
-//    final messages = await _firestore.collection('messages').getDocuments();
-//    for (var message in messages.documents) {
-//      print(message.data);
-//    }
-//  }
-//
-  void messagesStream() async {
-    await for (var snapshots
-        in _firestore.collection('messages').snapshots()) {}
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -117,7 +105,7 @@ class MessagesStream extends StatelessWidget {
       stream: _firestore.collection('messages').snapshots(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          final messages = snapshot.data;
+          final messages = snapshot.data.documents.reversed;
           List<MessageBubble> messageWidgets = [];
           for (var message in messages) {
             final messageText = message.data['text'];
@@ -134,6 +122,7 @@ class MessagesStream extends StatelessWidget {
           }
           return Expanded(
             child: ListView(
+              reverse: true,
               padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
               children: messageWidgets,
             ),
@@ -170,11 +159,17 @@ class MessageBubble extends StatelessWidget {
               )),
           Material(
             elevation: 5.0,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(30.0),
-              bottomLeft: Radius.circular(30.0),
-              bottomRight: Radius.circular(30.0),
-            ),
+            borderRadius: isMe
+                ? BorderRadius.only(
+                    topLeft: Radius.circular(30.0),
+                    bottomLeft: Radius.circular(30.0),
+                    bottomRight: Radius.circular(30.0),
+                  )
+                : BorderRadius.only(
+                    topRight: Radius.circular(30.0),
+                    bottomLeft: Radius.circular(30.0),
+                    bottomRight: Radius.circular(30.0),
+                  ),
             color: isMe ? Colors.lightBlueAccent : Colors.white,
             child: Padding(
               padding:
